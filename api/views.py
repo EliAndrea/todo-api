@@ -1,37 +1,34 @@
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from api.models import Contact, ContactSerializer
-
-"""
-The ContactsView will contain the logic on how to:
- GET, POST, PUT or delete the contacts
-"""
-class ContactsView(APIView):
-    def get(self, request, contact_id=None):
-
-        if contact_id is not None:
-            contact = Contact.objects.get(id=contact_id)
-            serializer = ContactSerializer(contact, many=False)
-            return Response(serializer.data)
-        else:
-            contacts = Contact.objects.all()
-            serializer = ContactSerializer(contacts, many=True)
-            return Response(serializer.data)
-
-    def post(self, request):
-
-        serializer = ContactSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+from api.models import Task, TaskSerializer
 
 
-    def delete(self, request, contact_id):
+class TaskView(APIView):
+    def get(self, request, user_name):
+        tasks = Task.objects.filter(user_name=user_name)
+        serializer = TaskSerializer(tasks, many=True)
+        return Response(serializer.data)
 
-        contact = Contact.objects.get(id=contact_id)
-        contact.delete()
+    def post(self, request, user_name):
+        new_user = Task(user_name=user_name, label="run", done=False)
+        new_user.save()
+        serializer = TaskSerializer(new_user, many=False)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
+    def put(self,request, user_name):
+        tasks = Task.objects.filter(user_name=user_name)
+        tasks.delete()
+        print(request.data)
+        tasks_list = request.data["list"]
+        for task in tasks_list:
+            new_task = Task(user_name=user_name, label= task["label"], done=False)
+            new_task.save()
+        new_tasks = Task.objects.filter(user_name=user_name)
+        serializer = TaskSerializer(tasks, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def delete(self, request, user_name):
+        task = Task.objects.filter(user_name=user_name)
+        task.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
