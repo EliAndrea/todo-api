@@ -2,7 +2,7 @@
 
 ## Descripción
 
-API REST realizada para conectarse con proyecto TodoList con React. (Tarea día 21)
+API REST realizada para conectarse con proyecto TodoList con React. Utilizando Django REST framework (Tarea día 21)
 
 Implementa los siguientes Endpoints:
 
