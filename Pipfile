@@ -15,7 +15,7 @@ djangorestframework = "*"
 pygraphviz = "*"
 django-extensions = "*"
 django-rest-swagger = "*"
-django = ">=2.2.2"
+django = ">=2.2.3"
 
 [dev-packages]
 
